@@ -1,14 +1,24 @@
 <!doctype html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title></title>
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="" />
+    <title>PhishGuard</title>
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <script src="" async defer></script>
+    <div class="container">
+      <h2>SecureSurf</h2>
+
+      <p id="current-url">Scanning...</p>
+
+      <button id="scan-btn">Scan Website</button>
+
+      <div id="result">
+        <h3 id="risk-level"></h3>
+        <p id="score"></p>
+        <p id="explanation"></p>
+      </div>
+    </div>
+
+    <script type="module" src="popup.js"></script>
   </body>
 </html>

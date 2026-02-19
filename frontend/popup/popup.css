@@ -1,1 +1,53 @@
 /* css file for popup */
+body {
+  font-family: Arial, sans-serif;
+  width: 300px;
+  padding: 15px;
+  background-color: #f4f6f8;
+}
+
+.container {
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 10px;
+  color: #1f2937;
+}
+
+#current-url {
+  font-size: 12px;
+  word-wrap: break-word;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+#result {
+  margin-top: 15px;
+}
+
+.safe {
+  color: green;
+}
+
+.suspicious {
+  color: orange;
+}
+
+.dangerous {
+  color: red;
+}
