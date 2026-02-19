@@ -1,12 +1,14 @@
 <!doctype html>
 <html>
   <head>
-    <title>SecureSurf</title>
+    <title>PhishGuard</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <div class="container">
-      <h2>SecureSurf</h2>
+      <h2>🛡️ PhishGuard</h2>
+
+      <div id="api-status" style="font-size: 11px; margin-bottom: 8px"></div>
 
       <p id="current-url"></p>
 
@@ -14,11 +16,12 @@
         <h3 id="risk-level"></h3>
         <p id="score"></p>
         <p id="explanation"></p>
-        <a id="details-link" href="#" target="_blank">View Detailed Analysis</a>
+        <a id="details-link" href="#" target="_blank"
+          >📊 View Detailed Analysis</a
+        >
       </div>
     </div>
 
-    <!-- Make popup.js a module to allow imports -->
     <script type="module" src="popup.js"></script>
   </body>
 </html>
