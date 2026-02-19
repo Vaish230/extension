@@ -3,19 +3,14 @@
   "name": "SecureSurf",
   "version": "1.0",
   "description": "AI-powered phishing detection extension",
-
   "permissions": ["activeTab", "scripting", "storage"],
-
   "host_permissions": ["<all_urls>"],
-
   "action": {
-    "default_popup": "popup/popup.html"
+    "default_popup": "frontend/popup/popup.html"
   },
-
   "background": {
-    "service_worker": "background/background.js"
+    "service_worker": "frontend/background/background.js"
   },
-
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

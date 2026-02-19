@@ -1,47 +1,62 @@
-import { extractURLFeatures } from "../features/urlFeatures.js";
-import { extractEmailFeatures } from "../features/emailFeatures.js";
-
-document.addEventListener("DOMContentLoaded", function () {
-  const scanBtn = document.getElementById("scan-btn");
+document.addEventListener("DOMContentLoaded", () => {
   const currentUrlText = document.getElementById("current-url");
   const riskLevelText = document.getElementById("risk-level");
   const scoreText = document.getElementById("score");
   const explanationText = document.getElementById("explanation");
+  const detailsLink = document.getElementById("details-link");
 
-  let currentUrl = "";
+  chrome.storage.local.get("riskData", ({ riskData }) => {
+    if (!riskData) {
+      currentUrlText.textContent = "No data available.";
+      return;
+    }
 
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    currentUrl = tabs[0].url;
-    currentUrlText.textContent = currentUrl;
-  });
+    // Populate popup fields
+    currentUrlText.textContent = riskData.url;
+    riskLevelText.textContent = riskData.level;
+    scoreText.textContent = `Risk Score: ${riskData.score}`;
+    explanationText.textContent = riskData.explanation;
 
-  scanBtn.addEventListener("click", function () {
-    console.log("Scan button clicked");
+    // Set risk color
+    riskLevelText.className = riskData.level.toLowerCase(); // safe / suspicious / dangerous
 
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      const tabId = tabs[0].id;
+    // Show detailed reasons on click
+    detailsLink.href = "#";
+    detailsLink.addEventListener("click", (e) => {
+      e.preventDefault();
 
-      chrome.tabs.sendMessage(
-        tabId,
-        { action: "getPageData" },
-        function (response) {
-          if (!response) {
-            explanationText.textContent = "Could not access page data.";
-            return;
-          }
+      const reasons = riskData.detailedReasons;
+      let message = "Detailed Analysis:\n";
 
-          const pageText = response.text;
-          const links = response.links;
+      if (reasons.suspiciousWords) {
+        message += `Suspicious Words: ${reasons.suspiciousWords.join(", ") || "None"}\n`;
+      }
+      if (reasons.longUrl !== undefined) {
+        message += `Long URL: ${reasons.longUrl ? "Yes" : "No"}\n`;
+      }
+      if (reasons.externalLinks !== undefined) {
+        message += `Too many links: ${reasons.externalLinks ? "Yes" : "No"}\n`;
+      }
+      if (reasons.urgentWordCount !== undefined) {
+        message += `Urgent Words: ${reasons.urgentWordCount}\n`;
+      }
+      if (reasons.suspiciousKeywordCount !== undefined) {
+        message += `Suspicious Keywords: ${reasons.suspiciousKeywordCount}\n`;
+      }
+      if (reasons.capitalRatio !== undefined) {
+        message += `All Caps Ratio: ${(reasons.capitalRatio * 100).toFixed(1)}%\n`;
+      }
+      if (reasons.exclamationCount !== undefined) {
+        message += `Exclamation Marks: ${reasons.exclamationCount}\n`;
+      }
+      if (reasons.attachmentKeywordCount !== undefined) {
+        message += `Attachment Keywords: ${reasons.attachmentKeywordCount}\n`;
+      }
+      if (reasons.emailLength !== undefined) {
+        message += `Email Length: ${reasons.emailLength}\n`;
+      }
 
-          const urlFeatures = extractURLFeatures(currentUrl);
-          const emailFeatures = extractEmailFeatures(pageText, links);
-
-          console.log("URL Features:", urlFeatures);
-          console.log("Email Features:", emailFeatures);
-
-          explanationText.textContent = "Features extracted. Check console.";
-        },
-      );
+      alert(message);
     });
   });
 });

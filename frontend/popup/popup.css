@@ -1,4 +1,4 @@
-/* css file for popup */
+/* popup.css */
 body {
   font-family: Arial, sans-serif;
   width: 300px;
@@ -50,4 +50,20 @@ button:hover {
 
 .dangerous {
   color: red;
+}
+
+#details-link {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+#details-link:hover {
+  text-decoration: underline;
+}
+
+#explanation {
+  white-space: pre-line; /* allow line breaks for "tap the link" */
 }
