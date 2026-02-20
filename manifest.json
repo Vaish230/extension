@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "SecureSurf",
+  "version": "1.0",
+  "description": "AI-powered phishing detection extension",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "frontend/popup/popup.html"
+  },
+  "background": {
+    "service_worker": "frontend/background/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/contentScript.js"]
+    }
+  ]
+}
