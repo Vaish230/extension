@@ -1,24 +1,66 @@
 <!doctype html>
 <html>
   <head>
-    <title>PhishGuard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureSurf</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <div class="container">
-      <h2>🛡️ PhishGuard</h2>
+      <!-- Header -->
+      <div class="header">
+        <div class="logo">
+          <span class="logo-icon">🛡️</span>
+          <span class="logo-text">SecureSurf</span>
+        </div>
+        <button class="close-btn" id="closePopup">✕</button>
+      </div>
 
-      <div id="api-status" style="font-size: 11px; margin-bottom: 8px"></div>
+      <!-- URL Card -->
+      <div class="url-card" id="urlCard">
+        <div class="full-url" id="currentUrl">Loading...</div>
+        <div class="ip-address" id="ipAddress"></div>
+      </div>
 
-      <p id="current-url"></p>
+      <!-- Risk Score Section -->
+      <div class="risk-section">
+        <div class="score-header">
+          <span class="score-label">Risk Score</span>
+          <span class="score-value" id="riskScore">--/100</span>
+        </div>
 
-      <div id="result">
-        <h3 id="risk-level"></h3>
-        <p id="score"></p>
-        <p id="explanation"></p>
-        <a id="details-link" href="#" target="_blank"
-          >📊 View Detailed Analysis</a
-        >
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+
+        <div class="status-badge" id="statusBadge">
+          <span>⚡</span>
+          <span id="statusText">Analyzing...</span>
+        </div>
+      </div>
+
+      <!-- Red Flags List -->
+      <div class="flags-section" id="flagsSection">
+        <div class="flags-title">⚠️ Detected Issues</div>
+        <div class="flags-list" id="flagsList">
+          <!-- Flags will be populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button class="btn btn-primary" id="highlightBtn">
+          <span>🔍</span> Highlight Suspicious Elements
+        </button>
+        <button class="btn btn-secondary" id="whyRiskyBtn">
+          <span>❓</span> Why is this risky?
+        </button>
+      </div>
+
+      <!-- API Status -->
+      <div class="api-status" id="apiStatus">
+        <span id="apiStatusText">Checking API connection...</span>
       </div>
     </div>
 

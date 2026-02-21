@@ -1,69 +1,388 @@
-/* popup.css */
+/* ===============================
+   SecureSurf Popup Styles
+   Dark Theme Cybersecurity UI
+   =============================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  width: 300px;
-  padding: 15px;
-  background-color: #f4f6f8;
+  width: 600px; /* Perfect width */
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    sans-serif;
+  background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2f 100%);
+  color: #ffffff;
+  padding: 0;
+  margin: 0;
 }
 
+/* Main Container */
 .container {
-  text-align: center;
+  padding: 20px;
+  position: relative;
 }
 
-h2 {
-  margin-bottom: 10px;
-  color: #1f2937;
+/* ===============================
+   Header Section
+   =============================== */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-#current-url {
-  font-size: 12px;
-  word-wrap: break-word;
-  color: #555;
-  margin-bottom: 10px;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-button {
-  padding: 8px 15px;
+.logo-icon {
+  font-size: 24px;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.5));
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #00ffff, #ff00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.close-btn {
+  background: none;
   border: none;
-  border-radius: 6px;
-  background-color: #2563eb;
-  color: white;
+  color: #8f9bb3;
+  font-size: 20px;
   cursor: pointer;
-  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.3s;
 }
 
-button:hover {
-  background-color: #1d4ed8;
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
-#result {
-  margin-top: 15px;
+/* ===============================
+   URL Card
+   =============================== */
+
+.url-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-.safe {
-  color: green;
+.full-url {
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  word-break: break-all;
+  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
-.suspicious {
-  color: orange;
-}
-
-.dangerous {
-  color: red;
-}
-
-#details-link {
-  display: block;
-  margin-top: 10px;
+.ip-address {
   font-size: 12px;
-  color: #2563eb;
-  text-decoration: none;
+  color: #8f9bb3;
+  font-family: monospace;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#details-link:hover {
-  text-decoration: underline;
+/* ===============================
+   Risk Score Section
+   =============================== */
+
+.risk-section {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-#explanation {
-  white-space: pre-line; /* allow line breaks for "tap the link" */
+.score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.score-label {
+  font-size: 14px;
+  color: #8f9bb3;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.score-value {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff, #00ffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Progress Bar */
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+.progress-bar.safe {
+  background: linear-gradient(90deg, #00ff00, #00cc00);
+}
+
+.progress-bar.suspicious {
+  background: linear-gradient(90deg, #ffaa00, #ff6600);
+}
+
+.progress-bar.dangerous {
+  background: linear-gradient(90deg, #ff4444, #ff0000);
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.status-badge.safe {
+  background: rgba(0, 255, 0, 0.1);
+  color: #00ff00;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.status-badge.suspicious {
+  background: rgba(255, 170, 0, 0.1);
+  color: #ffaa00;
+  border: 1px solid rgba(255, 170, 0, 0.3);
+}
+
+.status-badge.dangerous {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4444;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+/* ===============================
+   Red Flags List
+   =============================== */
+
+.flags-section {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.flags-title {
+  font-size: 14px;
+  color: #8f9bb3;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.flags-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flag-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: #ffffff;
+  padding: 8px;
+  background: rgba(255, 0, 0, 0.1);
+  border-left: 3px solid #ff0000;
+  border-radius: 4px;
+}
+
+.flag-icon {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.flag-text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* ===============================
+   Action Buttons
+   =============================== */
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff0000, #cc0000);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   API Status
+   =============================== */
+
+.api-status {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 15px;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.api-status.online {
+  color: #00ff00;
+}
+
+.api-status.offline {
+  color: #ff4444;
+}
+
+/* ===============================
+   Loading State
+   =============================== */
+
+.loading {
+  text-align: center;
+  padding: 30px;
+  color: #8f9bb3;
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #ff0000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===============================
+   Tooltips
+   =============================== */
+
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-tooltip]:before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  background: #1a1f2f;
+  color: white;
+  font-size: 11px;
+  border-radius: 4px;
+  white-space: nowrap;
+  border: 1px solid #ff0000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+[data-tooltip]:hover:before {
+  opacity: 1;
+  visibility: visible;
+  bottom: 120%;
+}
+
+/* ===============================
+   Responsive Design
+   =============================== */
+
+@media (max-width: 600px) {
+  body {
+    width: 100%;
+  }
+
+  .container {
+    padding: 15px;
+  }
 }

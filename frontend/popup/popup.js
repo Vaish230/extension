@@ -1,105 +1,239 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const currentUrlText = document.getElementById("current-url");
-  const riskLevelText = document.getElementById("risk-level");
-  const scoreText = document.getElementById("score");
-  const explanationText = document.getElementById("explanation");
-  const detailsLink = document.getElementById("details-link");
-  const mlBadge = document.getElementById("ml-badge");
+// ===============================
+// SecureSurf Popup Script
+// Screen 1: Risk Scorecard Dashboard
+// ===============================
 
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM Elements
+  const elements = {
+    closeBtn: document.getElementById("closePopup"),
+    currentUrl: document.getElementById("currentUrl"),
+    ipAddress: document.getElementById("ipAddress"),
+    riskScore: document.getElementById("riskScore"),
+    progressBar: document.getElementById("progressBar"),
+    statusBadge: document.getElementById("statusBadge"),
+    statusText: document.getElementById("statusText"),
+    flagsList: document.getElementById("flagsList"),
+    flagsSection: document.getElementById("flagsSection"),
+    highlightBtn: document.getElementById("highlightBtn"),
+    whyRiskyBtn: document.getElementById("whyRiskyBtn"),
+    apiStatus: document.getElementById("apiStatus"),
+    apiStatusText: document.getElementById("apiStatusText"),
+  };
+
+  // ===============================
+  // Close Popup
+  // ===============================
+  elements.closeBtn.addEventListener("click", () => {
+    window.close();
+  });
+
+  // ===============================
+  // Get Risk Data from Storage
+  // ===============================
   chrome.storage.local.get("riskData", ({ riskData }) => {
     if (!riskData) {
-      currentUrlText.textContent = "No data available.";
+      showNoData();
       return;
     }
 
-    // Populate popup fields
-    currentUrlText.textContent = riskData.url;
-    riskLevelText.textContent = `${riskData.level} (${riskData.score}%)`;
-    scoreText.textContent = `Risk Score: ${riskData.score}%`;
-    explanationText.textContent = riskData.explanation;
+    console.log("📊 Risk Data:", riskData);
+    updateUI(riskData);
+  });
 
-    // Set risk color
-    riskLevelText.className = riskData.level.toLowerCase();
+  // ===============================
+  // Update UI with Risk Data
+  // ===============================
+  function updateUI(riskData) {
+    // Update URL
+    elements.currentUrl.textContent = riskData.url || "No URL";
 
-    // Add ML badge if available
-    if (riskData.detailedReasons?.source) {
-      const source = riskData.detailedReasons.source;
-      const badge = document.createElement("span");
-      badge.style.fontSize = "10px";
-      badge.style.padding = "2px 6px";
-      badge.style.borderRadius = "10px";
-      badge.style.background = source === "combined" ? "#4CAF50" : "#999";
-      badge.style.color = "white";
-      badge.style.marginLeft = "8px";
-      badge.textContent =
-        source === "combined" ? "🤖 ML + Rules" : "⚙️ Rules Only";
-      riskLevelText.appendChild(badge);
+    // Extract IP if present (simplified - in production, parse from URL)
+    const ipMatch = riskData.url?.match(/(\d{1,3}\.){3}\d{1,3}/);
+    elements.ipAddress.textContent = ipMatch ? `IP: ${ipMatch[0]}` : "";
+
+    // Update Risk Score
+    const score = riskData.score || 0;
+    elements.riskScore.textContent = `${Math.round(score)}/100`;
+    elements.progressBar.style.width = `${score}%`;
+
+    // Set progress bar color based on score
+    elements.progressBar.className = "progress-bar";
+    if (score < 30) {
+      elements.progressBar.classList.add("safe");
+      elements.statusBadge.className = "status-badge safe";
+      elements.statusText.textContent = "✅ Safe";
+    } else if (score < 60) {
+      elements.progressBar.classList.add("suspicious");
+      elements.statusBadge.className = "status-badge suspicious";
+      elements.statusText.textContent = "⚠️ Suspicious";
+    } else {
+      elements.progressBar.classList.add("dangerous");
+      elements.statusBadge.className = "status-badge dangerous";
+      elements.statusText.textContent = "🔴 Dangerous";
     }
 
-    // Show detailed reasons on click
-    detailsLink.href = "#";
-    detailsLink.addEventListener("click", (e) => {
-      e.preventDefault();
+    // Update Flags List
+    updateFlagsList(riskData.detailedReasons);
 
-      const reasons = riskData.detailedReasons;
-      let message = "🔍 DETAILED ANALYSIS:\n";
-      message += "═".repeat(30) + "\n\n";
+    // Check API Status
+    checkAPIStatus();
+  }
 
-      // Show source info
-      message += `📊 Analysis Type: ${reasons.source || "heuristic"}\n`;
-      if (reasons.ml_score !== undefined) {
-        message += `🤖 ML Score: ${reasons.ml_score}%\n`;
-        message += `🎯 ML Confidence: ${Math.round(reasons.ml_probability * 100)}%\n`;
-      }
-      message += `📏 Heuristic Score: ${reasons.heuristic_score}%\n\n`;
+  // ===============================
+  // Update Flags List
+  // ===============================
+  function updateFlagsList(reasons) {
+    if (!reasons) {
+      elements.flagsSection.style.display = "none";
+      return;
+    }
 
-      // Show features
-      message += "📋 DETECTED FEATURES:\n";
-      message += "─".repeat(25) + "\n";
+    const flags = generateFlags(reasons);
 
-      if (reasons.suspiciousWords) {
-        message += `Suspicious Words: ${reasons.suspiciousWords.join(", ") || "None"}\n`;
-      }
-      if (reasons.longUrl !== undefined) {
-        message += `Long URL: ${reasons.longUrl ? "Yes" : "No"}\n`;
-      }
-      if (reasons.externalLinks !== undefined) {
-        message += `Too many links: ${reasons.externalLinks ? "Yes" : "No"}\n`;
-      }
-      if (reasons.urgentWordCount !== undefined) {
-        message += `Urgent Words: ${reasons.urgentWordCount}\n`;
-      }
-      if (reasons.suspiciousKeywordCount !== undefined) {
-        message += `Suspicious Keywords: ${reasons.suspiciousKeywordCount}\n`;
-      }
-      if (reasons.capitalRatio !== undefined) {
-        message += `All Caps Ratio: ${(reasons.capitalRatio * 100).toFixed(1)}%\n`;
-      }
-      if (reasons.exclamationCount !== undefined) {
-        message += `Exclamation Marks: ${reasons.exclamationCount}\n`;
-      }
-      if (reasons.attachmentKeywordCount !== undefined) {
-        message += `Attachment Keywords: ${reasons.attachmentKeywordCount}\n`;
-      }
-      if (reasons.emailLength !== undefined) {
-        message += `Email Length: ${reasons.emailLength}\n`;
-      }
+    if (flags.length === 0) {
+      elements.flagsSection.style.display = "none";
+      return;
+    }
 
-      alert(message);
+    elements.flagsSection.style.display = "block";
+    elements.flagsList.innerHTML = flags
+      .map(
+        (flag) => `
+      <div class="flag-item">
+        <span class="flag-icon">🚩</span>
+        <span class="flag-text">${flag}</span>
+      </div>
+    `,
+      )
+      .join("");
+  }
+
+  // ===============================
+  // Generate Flags from Reasons
+  // ===============================
+  function generateFlags(reasons) {
+    const flags = [];
+
+    // URL-based flags
+    if (reasons.hasIP === 1) {
+      flags.push("IP-based URL detected");
+    }
+
+    if (reasons.hasSuspiciousKeyword === 1) {
+      flags.push("Suspicious keyword detected");
+    }
+
+    if (reasons.subdomainCount > 2) {
+      flags.push(`Excessive subdomains (${reasons.subdomainCount})`);
+    }
+
+    if (reasons.urlLength > 75) {
+      flags.push("Unusually long URL");
+    }
+
+    if (reasons.hasAtSymbol === 1) {
+      flags.push("URL contains @ symbol");
+    }
+
+    // Email-based flags
+    if (reasons.urgentWordCount > 0) {
+      flags.push(`Urgent language detected (${reasons.urgentWordCount} words)`);
+    }
+
+    if (reasons.suspiciousKeywordCount > 0) {
+      flags.push(`Suspicious keywords (${reasons.suspiciousKeywordCount})`);
+    }
+
+    if (reasons.capitalRatio > 0.5) {
+      flags.push("Excessive capitalization");
+    }
+
+    if (reasons.exclamationCount > 3) {
+      flags.push(`Multiple exclamation marks (${reasons.exclamationCount})`);
+    }
+
+    if (reasons.linkCount > 10) {
+      flags.push(`Too many links (${reasons.linkCount})`);
+    }
+
+    return flags;
+  }
+
+  // ===============================
+  // Show No Data State
+  // ===============================
+  function showNoData() {
+    elements.currentUrl.textContent = "No active scan";
+    elements.riskScore.textContent = "--/100";
+    elements.progressBar.style.width = "0%";
+    elements.statusBadge.className = "status-badge";
+    elements.statusText.textContent = "No Data";
+    elements.flagsSection.style.display = "none";
+  }
+
+  // ===============================
+  // Check API Status
+  // ===============================
+  function checkAPIStatus() {
+    chrome.runtime.sendMessage({ action: "checkAPI" }, (response) => {
+      if (response?.status === "ok") {
+        elements.apiStatus.className = "api-status online";
+        elements.apiStatusText.textContent = "🟢 ML API Connected";
+      } else {
+        elements.apiStatus.className = "api-status offline";
+        elements.apiStatusText.textContent =
+          "🔴 ML API Offline (Using Rules Only)";
+      }
+    });
+  }
+
+  // ===============================
+  // Highlight Elements Button
+  // ===============================
+  elements.highlightBtn.addEventListener("click", () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(
+        tabs[0].id,
+        {
+          action: "toggleHighlights",
+        },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            console.log("Content script not ready");
+          }
+        },
+      );
     });
   });
-});
 
-// Optional: Check API status on popup open
-chrome.runtime.sendMessage({ action: "checkAPI" }, (response) => {
-  const statusEl = document.getElementById("api-status");
-  if (statusEl) {
-    if (response?.status === "ok") {
-      statusEl.textContent = "🟢 ML API Connected";
-      statusEl.style.color = "green";
-    } else {
-      statusEl.textContent = "🔴 ML API Offline (Using Rules Only)";
-      statusEl.style.color = "red";
+  // ===============================
+  // Why is this risky? Button
+  // ===============================
+  elements.whyRiskyBtn.addEventListener("click", () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(
+        tabs[0].id,
+        {
+          action: "showEducational",
+        },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            console.log("Content script not ready");
+            // Fallback: show educational in popup?
+            alert("Please open a webpage first to see risk analysis.");
+          }
+        },
+      );
+    });
+  });
+
+  // ===============================
+  // Listen for Updates from Background
+  // ===============================
+  chrome.storage.onChanged.addListener((changes) => {
+    if (changes.riskData) {
+      updateUI(changes.riskData.newValue);
     }
-  }
+  });
 });
