@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureSurf</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <div class="logo">
+          <span class="logo-icon">🛡️</span>
+          <span class="logo-text">SecureSurf</span>
+        </div>
+        <button class="close-btn" id="closePopup">✕</button>
+      </div>
+
+      <!-- URL Card -->
+      <div class="url-card" id="urlCard">
+        <div class="full-url" id="currentUrl">Loading...</div>
+        <div class="ip-address" id="ipAddress"></div>
+      </div>
+
+      <!-- Risk Score Section -->
+      <div class="risk-section">
+        <div class="score-header">
+          <span class="score-label">Risk Score</span>
+          <span class="score-value" id="riskScore">--/100</span>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+
+        <div class="status-badge" id="statusBadge">
+          <span>⚡</span>
+          <span id="statusText">Analyzing...</span>
+        </div>
+      </div>
+
+      <!-- Red Flags List -->
+      <div class="flags-section" id="flagsSection">
+        <div class="flags-title">⚠️ Detected Issues</div>
+        <div class="flags-list" id="flagsList">
+          <!-- Flags will be populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button class="btn btn-primary" id="highlightBtn">
+          <span>🔍</span> Highlight Suspicious Elements
+        </button>
+        <button class="btn btn-secondary" id="whyRiskyBtn">
+          <span>❓</span> Why is this risky?
+        </button>
+      </div>
+
+      <!-- API Status -->
+      <div class="api-status" id="apiStatus">
+        <span id="apiStatusText">Checking API connection...</span>
+      </div>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

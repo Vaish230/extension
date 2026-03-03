@@ -1,0 +1,31 @@
+{
+    "training_date": "2026-02-20 00:25:58",
+    "model_type": "LogisticRegression",
+    "feature_names": [
+        "email_length",
+        "link_count",
+        "urgent_word_count",
+        "suspicious_keyword_count",
+        "capital_ratio",
+        "exclamation_count",
+        "attachment_keyword_count"
+    ],
+    "num_features": 7,
+    "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "test_size": 2
+    },
+    "coefficients": [
+        0.47964585886601196,
+        0.03564570985805271,
+        0.10460328127299248,
+        0.03482081755572569,
+        5.532864382057004e-05,
+        0.007645878587757635,
+        0.0
+    ],
+    "intercept": -46.93494550737981
+}
